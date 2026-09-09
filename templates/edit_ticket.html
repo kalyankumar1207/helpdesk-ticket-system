@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="page-header">
+    <div>
+        <h1>Edit Ticket #{{ ticket["id"] }}</h1>
+        <p class="subtitle">Update the ticket information below.</p>
+    </div>
+
+    <a href="{{ url_for('tickets') }}" class="btn btn-secondary">
+        Back to Tickets
+    </a>
+</div>
+
+<div class="form-card">
+
+    <form method="POST">
+
+        <!-- Title -->
+        <div class="form-group">
+            <label for="title">Title *</label>
+
+            <input
+                type="text"
+                id="title"
+                name="title"
+                value="{{ ticket['title'] }}"
+                required
+            >
+        </div>
+
+
+        <!-- Description -->
+        <div class="form-group">
+            <label for="description">Description *</label>
+
+            <textarea
+                id="description"
+                name="description"
+                required
+            >{{ ticket['description'] }}</textarea>
+        </div>
+
+
+        <!-- Category - Read Only -->
+        <div class="form-group">
+            <label for="category">Category</label>
+
+            <input
+                type="text"
+                id="category"
+                value="{{ ticket['category'] }}"
+                disabled
+            >
+
+            <small>
+                Category cannot be changed after ticket creation.
+            </small>
+        </div>
+
+
+        <!-- Priority -->
+        <div class="form-group">
+            <label for="priority">Priority *</label>
+
+            <select
+                id="priority"
+                name="priority"
+                required
+            >
+
+                {% for priority in priorities %}
+
+                    <option
+                        value="{{ priority }}"
+                        {% if ticket['priority'] == priority %}selected{% endif %}
+                    >
+                        {{ priority }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </div>
+
+
+        <!-- Status -->
+        <div class="form-group">
+            <label for="status">Status *</label>
+
+            <select
+                id="status"
+                name="status"
+                required
+            >
+
+                {% for status in statuses %}
+
+                    <option
+                        value="{{ status }}"
+                        {% if ticket['status'] == status %}selected{% endif %}
+                    >
+                        {{ status }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+        </div>
+
+
+        <!-- Assigned To -->
+        <div class="form-group">
+            <label for="assigned_to">Assigned To *</label>
+
+            <input
+                type="text"
+                id="assigned_to"
+                name="assigned_to"
+                value="{{ ticket['assigned_to'] }}"
+                required
+            >
+        </div>
+
+
+        <!-- Created Date -->
+        <div class="form-group">
+            <label>Created Date</label>
+
+            <input
+                type="text"
+                value="{{ ticket['created_date'] }}"
+                disabled
+            >
+        </div>
+
+
+        <!-- Buttons -->
+        <div class="form-actions">
+
+            <button
+                type="submit"
+                class="btn btn-primary"
+            >
+                Update Ticket
+            </button>
+
+            <a
+                href="{{ url_for('tickets') }}"
+                class="btn btn-secondary"
+            >
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

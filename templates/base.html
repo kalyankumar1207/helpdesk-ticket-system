@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        {% block title %}
+        Helpdesk Ticket Management System
+        {% endblock %}
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+
+<body>
+
+<div class="app-shell">
+
+    <!-- ================= SIDEBAR ================= -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-mark">
+                IT
+            </div>
+
+            <div class="brand-text">
+
+                <strong>
+                    Helpdesk
+                </strong>
+
+                <span>
+                    Ticket Management
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-nav">
+
+            <div class="nav-section-title">
+                WORKSPACE
+            </div>
+
+
+            <!-- Dashboard -->
+            <a
+                href="{{ url_for('dashboard') }}"
+                class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"
+            >
+
+                <span class="nav-icon">
+                    ⌂
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <!-- Tickets -->
+            <a
+                href="{{ url_for('tickets') }}"
+                class="nav-link {% if request.endpoint == 'tickets' %}active{% endif %}"
+            >
+
+                <span class="nav-icon">
+                    ▤
+                </span>
+
+                <span>
+                    Tickets
+                </span>
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- ================= MAIN AREA ================= -->
+
+    <div class="main-area">
+
+
+        <!-- Top Bar -->
+        <header class="topbar">
+
+            <div class="topbar-left">
+
+                <span class="topbar-title">
+                    IT Service Desk
+                </span>
+
+                <span class="topbar-divider"></span>
+
+                <span class="topbar-context">
+                    Helpdesk Management
+                </span>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <span class="status-dot"></span>
+
+                <span>
+                    Service Desk
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <!-- ================= CONTENT ================= -->
+
+        <main class="main-content">
+
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+
+                {% if messages %}
+
+                    <div class="flash-container">
+
+                        {% for category, message in messages %}
+
+                            <div class="flash {{ category }}">
+                                {{ message }}
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                {% endif %}
+
+            {% endwith %}
+
+
+            {% if error_message %}
+
+                <div class="flash danger">
+                    {{ error_message }}
+                </div>
+
+            {% endif %}
+
+
+            {% block content %}
+
+            {% endblock %}
+
+
+        </main>
+
+
+        <!-- Footer -->
+        <footer class="app-footer">
+
+            <span>
+                Helpdesk Ticket Management System
+            </span>
+
+            <span>
+                Service Desk
+            </span>
+
+        </footer>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

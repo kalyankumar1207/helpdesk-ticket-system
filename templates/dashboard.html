@@ -1,0 +1,569 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard - Helpdesk Ticket System
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= PAGE HEADING ================= -->
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">
+            SERVICE DESK
+        </div>
+
+        <h1>
+            Dashboard
+        </h1>
+
+        <p>
+            Monitor and manage IT support requests across the organisation.
+        </p>
+    </div>
+
+    <!-- Create Ticket -->
+    <a
+        href="{{ url_for('create_ticket_page') }}"
+        class="btn btn-primary"
+    >
+        <span>
+            ＋
+        </span>
+        Create Ticket
+    </a>
+</div>
+
+
+<!-- ================= KPI CARDS ================= -->
+
+<div class="dashboard-kpis">
+
+    <!-- ================= TOTAL TICKETS ================= -->
+
+    <div class="kpi-card total-kpi">
+
+        <div class="kpi-top">
+
+            <span class="kpi-label">
+                Total Tickets
+            </span>
+
+            <span
+                class="kpi-icon"
+                style="background: #EFF6FF; color: #3B82F6;"
+            >
+                #
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value"
+            style="color: #3B82F6;"
+        >
+            {{ stats.total }}
+        </div>
+
+        <div class="kpi-description">
+            All service requests
+        </div>
+
+    </div>
+
+
+    <!-- ================= OPEN ================= -->
+
+    {% if stats.open > 0 %}
+
+    <div class="kpi-card open-kpi">
+
+        <div class="kpi-top">
+
+            <span class="kpi-label">
+                Open
+            </span>
+
+            <span
+                class="kpi-icon"
+                style="background: #EFF6FF; color: #3B82F6;"
+            >
+                ○
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value"
+            style="color: #3B82F6;"
+        >
+            {{ stats.open }}
+        </div>
+
+        <div class="kpi-description">
+            Awaiting action
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================= IN PROGRESS ================= -->
+
+    {% if stats.in_progress > 0 %}
+
+    <div class="kpi-card progress-kpi">
+
+        <div class="kpi-top">
+
+            <span class="kpi-label">
+                In Progress
+            </span>
+
+            <span
+                class="kpi-icon"
+                style="background: #FFF7ED; color: #F59E0B;"
+            >
+                ◐
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value"
+            style="color: #F59E0B;"
+        >
+            {{ stats.in_progress }}
+        </div>
+
+        <div class="kpi-description">
+            Currently being handled
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================= RESOLVED ================= -->
+
+    {% if stats.resolved > 0 %}
+
+    <div class="kpi-card resolved-kpi">
+
+        <div class="kpi-top">
+
+            <span class="kpi-label">
+                Resolved
+            </span>
+
+            <span
+                class="kpi-icon"
+                style="background: #ECFDF5; color: #22C55E;"
+            >
+                ✓
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value"
+            style="color: #22C55E;"
+        >
+            {{ stats.resolved }}
+        </div>
+
+        <div class="kpi-description">
+            Awaiting closure
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================= CLOSED ================= -->
+
+    {% if stats.closed > 0 %}
+
+    <div class="kpi-card closed-kpi">
+
+        <div class="kpi-top">
+
+            <span class="kpi-label">
+                Closed
+            </span>
+
+            <span
+                class="kpi-icon"
+                style="background: #F1F5F9; color: #64748B;"
+            >
+                ✓
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value"
+            style="color: #64748B;"
+        >
+            {{ stats.closed }}
+        </div>
+
+        <div class="kpi-description">
+            Completed requests
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================= CRITICAL ================= -->
+
+    {% if stats.critical > 0 %}
+
+    <div class="kpi-card critical-kpi">
+
+        <div class="kpi-top">
+
+            <span class="kpi-label">
+                Critical
+            </span>
+
+            <span
+                class="kpi-icon"
+                style="background: #FEE2E2; color: #DC2626;"
+            >
+                !
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value"
+            style="color: #DC2626;"
+        >
+            {{ stats.critical }}
+        </div>
+
+        <div class="kpi-description">
+            Requires urgent attention
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ================= IMMEDIATE ================= -->
+
+    {% if stats.immediate > 0 %}
+
+    <div class="kpi-card immediate-kpi">
+
+        <div class="kpi-top">
+
+            <span class="kpi-label">
+                Immediate
+            </span>
+
+            <span
+                class="kpi-icon"
+                style="background: #FEE2E2; color: #DC2626;"
+            >
+                !
+            </span>
+
+        </div>
+
+        <div
+            class="kpi-value"
+            style="color: #DC2626;"
+        >
+            {{ stats.immediate }}
+        </div>
+
+        <div class="kpi-description">
+            Requires priority attention
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+
+<!-- ================= LOWER DASHBOARD ================= -->
+
+<div class="dashboard-grid">
+
+
+    <!-- ================= TICKET STATUS ================= -->
+
+    <div class="card status-card">
+
+        <div class="card-header">
+
+            <h2>
+                Ticket Status
+            </h2>
+
+            <p>
+                Current distribution of service desk requests.
+            </p>
+
+        </div>
+
+
+        <!-- ================= OPEN ================= -->
+
+        {% if stats.open > 0 %}
+
+        <div class="status-row">
+
+            <div class="status-header">
+
+                <span>
+                    Open
+                </span>
+
+                <strong>
+                    {{ stats.open }}
+                </strong>
+
+            </div>
+
+            <div class="status-bar">
+
+                <div
+                    class="status-fill open-fill"
+                    style="width: {{ ((stats.open / stats.total) * 100)|round(0) if stats.total > 0 else 0 }}%;"
+                ></div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ================= IN PROGRESS ================= -->
+
+        {% if stats.in_progress > 0 %}
+
+        <div class="status-row">
+
+            <div class="status-header">
+
+                <span>
+                    In Progress
+                </span>
+
+                <strong>
+                    {{ stats.in_progress }}
+                </strong>
+
+            </div>
+
+            <div class="status-bar">
+
+                <div
+                    class="status-fill progress-fill"
+                    style="width: {{ ((stats.in_progress / stats.total) * 100)|round(0) if stats.total > 0 else 0 }}%;"
+                ></div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ================= RESOLVED ================= -->
+
+        {% if stats.resolved > 0 %}
+
+        <div class="status-row">
+
+            <div class="status-header">
+
+                <span>
+                    Resolved
+                </span>
+
+                <strong>
+                    {{ stats.resolved }}
+                </strong>
+
+            </div>
+
+            <div class="status-bar">
+
+                <div
+                    class="status-fill resolved-fill"
+                    style="width: {{ ((stats.resolved / stats.total) * 100)|round(0) if stats.total > 0 else 0 }}%;"
+                ></div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ================= HOLD ================= -->
+
+        {% if stats.hold > 0 %}
+
+        <div class="status-row">
+
+            <div class="status-header">
+
+                <span>
+                    Hold
+                </span>
+
+                <strong>
+                    {{ stats.hold }}
+                </strong>
+
+            </div>
+
+            <div class="status-bar">
+
+                <div
+                    class="status-fill hold-fill"
+                    style="width: {{ ((stats.hold / stats.total) * 100)|round(0) if stats.total > 0 else 0 }}%;"
+                ></div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ================= IMMEDIATE ================= -->
+
+        {% if stats.immediate > 0 %}
+
+        <div class="status-row">
+
+            <div class="status-header">
+
+                <span>
+                    Immediate
+                </span>
+
+                <strong>
+                    {{ stats.immediate }}
+                </strong>
+
+            </div>
+
+            <div class="status-bar">
+
+                <div
+                    class="status-fill"
+                    style="
+                        width: {{ ((stats.immediate / stats.total) * 100)|round(0) if stats.total > 0 else 0 }}%;
+                        background: #DC2626;
+                    "
+                ></div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- ================= CLOSED ================= -->
+
+        {% if stats.closed > 0 %}
+
+        <div class="status-row">
+
+            <div class="status-header">
+
+                <span>
+                    Closed
+                </span>
+
+                <strong>
+                    {{ stats.closed }}
+                </strong>
+
+            </div>
+
+            <div class="status-bar">
+
+                <div
+                    class="status-fill closed-fill"
+                    style="width: {{ ((stats.closed / stats.total) * 100)|round(0) if stats.total > 0 else 0 }}%;"
+                ></div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- ================= QUICK ACTIONS ================= -->
+
+    <div class="card quick-actions-card">
+
+        <div class="card-header">
+
+            <h2>
+                Quick Actions
+            </h2>
+
+            <p>
+                Common service desk tasks.
+            </p>
+
+        </div>
+
+
+        <!-- View Tickets -->
+
+        <a
+            href="{{ url_for('tickets') }}"
+            class="quick-action"
+        >
+
+            <div class="quick-action-icon">
+                →
+            </div>
+
+            <div class="quick-action-content">
+
+                <strong>
+                    View Tickets
+                </strong>
+
+                <span>
+                    Search, filter and manage tickets
+                </span>
+
+            </div>
+
+            <div class="quick-action-arrow">
+                ›
+            </div>
+
+        </a>
+
+    </div>
+
+</div>
+
+{% endblock %}
