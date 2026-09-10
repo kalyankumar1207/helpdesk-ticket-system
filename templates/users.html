@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Users - Helpdesk Ticket System{% endblock %}
+
+{% block content %}
+
+<div class="page-heading">
+    <div>
+        <div class="eyebrow">ADMINISTRATION</div>
+
+        <h1>Registered Users</h1>
+
+        <p>
+            View all users registered in the Helpdesk Ticket Management System.
+        </p>
+    </div>
+</div>
+
+<div class="card">
+
+    <div class="section-header">
+        <div>
+            <h2>User List</h2>
+            <p class="ticket-count">
+                {{ users|length }} user(s)
+            </p>
+        </div>
+    </div>
+
+    {% if users %}
+
+    <div class="table-container">
+        <table class="ticket-table">
+
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for user in users %}
+
+                <tr>
+                    <td>
+                        <strong>#{{ user["id"] }}</strong>
+                    </td>
+
+                    <td>
+                        <strong>{{ user["username"] }}</strong>
+                    </td>
+
+                    <td>
+                        <span class="badge
+                            {% if user['role'] == 'Admin' %}
+                                badge-critical
+                            {% else %}
+                                badge-open
+                            {% endif %}
+                        ">
+                            {{ user["role"] }}
+                        </span>
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+
+        <h3>No users found</h3>
+
+        <p>
+            No registered users are available.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

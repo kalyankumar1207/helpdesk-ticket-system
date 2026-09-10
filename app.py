@@ -17,7 +17,11 @@ from services.ticket_service import (
     update_ticket,
 )
 
-from services.auth_service import create_user, authenticate_user
+from services.auth_service import (
+    create_user,
+    authenticate_user,
+    get_all_users,
+)
 
 
 app = Flask(__name__)
@@ -81,6 +85,28 @@ def signup():
             )
 
     return render_template("signup.html")
+
+
+@app.route("/users")
+def users():
+    """Display all registered users. Admin only."""
+
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+
+    if session.get("role") != "Admin":
+        flash(
+            "Access denied. Only Admin users can view users.",
+            "danger",
+        )
+        return redirect(url_for("dashboard"))
+
+    users_list = get_all_users()
+
+    return render_template(
+        "users.html",
+        users=users_list,
+    )
 
 
 @app.route("/logout")
