@@ -101,26 +101,3 @@ def authenticate_user(username, password):
 
     finally:
         connection.close()
-
-
-def get_all_users():
-    """Retrieve all registered users."""
-
-    connection = get_connection()
-
-    try:
-        users = connection.execute(
-            """
-            SELECT
-                id,
-                username,
-                role
-            FROM users
-            ORDER BY username
-            """
-        ).fetchall()
-
-        return users
-
-    finally:
-        connection.close()
