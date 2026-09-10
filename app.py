@@ -1,13 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 
 from config import SECRET_KEY
 from database.db import init_db
+
 from services.ticket_service import (
     CATEGORIES,
     PRIORITIES,
     STATUSES,
     create_ticket,
     delete_ticket,
+    export_tickets,
     get_all_tickets,
     get_dashboard_stats,
     get_ticket,
@@ -15,18 +17,93 @@ from services.ticket_service import (
     update_ticket,
 )
 
+from services.auth_service import create_user, authenticate_user
+
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = SECRET_KEY
 
 
-# Create the database table when the application starts.
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    """Display and process the login form."""
+
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+
+        user = authenticate_user(username, password)
+
+        if user:
+            session["logged_in"] = True
+            session["username"] = user["username"]
+            session["role"] = user["role"]
+
+            flash("Login successful.", "success")
+
+            return redirect(url_for("dashboard"))
+
+        flash("Invalid username or password.", "danger")
+
+    return render_template("login.html")
+
+
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    """Display and process the signup form."""
+
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+        confirm_password = request.form.get("confirm_password", "")
+
+        try:
+            create_user(
+                username=username,
+                password=password,
+                confirm_password=confirm_password,
+            )
+
+            flash(
+                "Account created successfully. Please login.",
+                "success",
+            )
+
+            return redirect(url_for("login"))
+
+        except ValueError as error:
+            flash(str(error), "danger")
+
+        except Exception:
+            flash(
+                "An unexpected database error occurred.",
+                "danger",
+            )
+
+    return render_template("signup.html")
+
+
+@app.route("/logout")
+def logout():
+    """Log the user out and clear the session."""
+
+    session.clear()
+
+    flash("You have been logged out successfully.", "success")
+
+    return redirect(url_for("login"))
+
+
+# Create the database tables when the application starts.
 init_db()
 
 
 @app.route("/")
 def dashboard():
     """Display the dashboard with ticket statistics."""
+
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
 
     stats = get_dashboard_stats()
 
@@ -39,6 +116,9 @@ def dashboard():
 @app.route("/tickets")
 def tickets():
     """Display tickets with optional search and filters."""
+
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
 
     ticket_id = request.args.get("ticket_id", "").strip()
     title = request.args.get("title", "").strip()
@@ -73,9 +153,70 @@ def tickets():
     )
 
 
+@app.route("/tickets/export")
+def export_tickets_page():
+    """Export all tickets as a CSV file. Admin only."""
+
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+
+    if session.get("role") != "Admin":
+        flash(
+            "Access denied. Only Admin users can export tickets.",
+            "danger",
+        )
+        return redirect(url_for("tickets"))
+
+    tickets = export_tickets()
+
+    import csv
+    from io import StringIO
+
+    output = StringIO()
+
+    writer = csv.writer(output)
+
+    writer.writerow([
+        "Ticket ID",
+        "Title",
+        "Description",
+        "Category",
+        "Priority",
+        "Status",
+        "Created Date",
+        "Assigned To",
+    ])
+
+    for ticket in tickets:
+        writer.writerow([
+            ticket["id"],
+            ticket["title"],
+            ticket["description"],
+            ticket["category"],
+            ticket["priority"],
+            ticket["status"],
+            ticket["created_date"],
+            ticket["assigned_to"],
+        ])
+
+    response = app.response_class(
+        output.getvalue(),
+        mimetype="text/csv",
+    )
+
+    response.headers["Content-Disposition"] = (
+        "attachment; filename=tickets_export.csv"
+    )
+
+    return response
+
+
 @app.route("/tickets/create", methods=["GET", "POST"])
 def create_ticket_page():
     """Display and process the create-ticket form."""
+
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
 
     if request.method == "POST":
         title = request.form.get("title", "")
@@ -123,6 +264,9 @@ def create_ticket_page():
 def edit_ticket(ticket_id):
     """Display and process the edit-ticket form."""
 
+    if not session.get("logged_in"):
+        return redirect(url_for("login"))
+
     try:
         ticket = get_ticket(ticket_id)
 
@@ -163,7 +307,6 @@ def edit_ticket(ticket_id):
                 "danger",
             )
 
-        # Reload the updated form values after a validation error.
         ticket = {
             "id": ticket_id,
             "title": title,
@@ -186,6 +329,9 @@ def edit_ticket(ticket_id):
 @app.route("/tickets/<int:ticket_id>/delete", methods=["POST"])
 def delete_ticket_page(ticket_id):
     """Delete a ticket after confirmation."""
+
+    if not session.get("logged_in"):
+        return redirect(url_for("tickets"))
 
     try:
         delete_ticket(ticket_id)

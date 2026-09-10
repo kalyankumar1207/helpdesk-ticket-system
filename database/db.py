@@ -11,10 +11,11 @@ def get_connection():
 
 
 def init_db():
-    """Create the tickets table if it does not already exist."""
+    """Create the application tables if they do not already exist."""
     connection = get_connection()
 
     try:
+        # Create the tickets table.
         connection.execute(
             """
             CREATE TABLE IF NOT EXISTS tickets (
@@ -29,6 +30,35 @@ def init_db():
             )
             """
         )
+
+        # Create the users table.
+        connection.execute(
+            """
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password_hash TEXT NOT NULL,
+                created_date TEXT NOT NULL,
+                role TEXT NOT NULL DEFAULT 'User'
+            )
+            """
+        )
+
+        # Check whether the existing users table already has a role column.
+        columns = connection.execute(
+            "PRAGMA table_info(users)"
+        ).fetchall()
+
+        column_names = [column["name"] for column in columns]
+
+        # Add role to an existing database if the column is missing.
+        if "role" not in column_names:
+            connection.execute(
+                """
+                ALTER TABLE users
+                ADD COLUMN role TEXT NOT NULL DEFAULT 'User'
+                """
+            )
 
         connection.commit()
 

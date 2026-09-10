@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Sign Up - Helpdesk Ticket System</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+</head>
+
+
+<body>
+
+<div style="
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: #f4f7fb;
+    box-sizing: border-box;
+">
+
+
+    <!-- Signup Card -->
+
+    <div style="
+        width: 100%;
+        max-width: 400px;
+        padding: 30px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+    ">
+
+
+        <!-- Heading -->
+
+        <h2 style="
+            text-align: center;
+            margin: 0 0 8px 0;
+            color: #1f2937;
+        ">
+            Create Account
+        </h2>
+
+
+        <p style="
+            text-align: center;
+            margin: 0 0 25px 0;
+            color: #6b7280;
+            font-size: 14px;
+        ">
+            Create your Helpdesk account
+        </p>
+
+
+        <!-- Flash Messages -->
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+
+            {% if messages %}
+
+                {% for category, message in messages %}
+
+                    <div class="flash {{ category }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+        {% endwith %}
+
+
+        <!-- Signup Form -->
+
+        <form
+            method="POST"
+            action="{{ url_for('signup') }}"
+            onsubmit="return validateSignup()"
+        >
+
+
+            <!-- Username -->
+
+            <div style="
+                margin-bottom: 18px;
+            ">
+
+                <label
+                    for="username"
+                    style="
+                        display: block;
+                        margin-bottom: 6px;
+                        color: #374151;
+                    "
+                >
+                    <strong>Username</strong>
+                </label>
+
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Enter username"
+                    required
+                    minlength="3"
+                    autocomplete="username"
+                    style="
+                        width: 100%;
+                        padding: 10px 12px;
+                        box-sizing: border-box;
+                        border: 1px solid #b8b8b8;
+                        border-radius: 4px;
+                        outline: none;
+                        font-size: 14px;
+                        background: #fff;
+                    "
+                >
+
+            </div>
+
+
+            <!-- Password -->
+
+            <div style="
+                margin-bottom: 18px;
+            ">
+
+                <label
+                    for="password"
+                    style="
+                        display: block;
+                        margin-bottom: 6px;
+                        color: #374151;
+                    "
+                >
+                    <strong>Password</strong>
+                </label>
+
+
+                <div style="
+                    position: relative;
+                ">
+
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Enter password"
+                        required
+                        minlength="6"
+                        autocomplete="new-password"
+                        style="
+                            width: 100%;
+                            padding: 10px 38px 10px 12px;
+                            box-sizing: border-box;
+                            border: 1px solid #b8b8b8;
+                            border-radius: 4px;
+                            outline: none;
+                            font-size: 14px;
+                            background: #fff;
+                        "
+                    >
+
+
+                    <!-- Professional Eye Icon -->
+
+                    <button
+                        type="button"
+                        onclick="togglePassword('password', this)"
+                        aria-label="Show password"
+                        style="
+                            position: absolute;
+                            right: 8px;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            border: none;
+                            background: transparent;
+                            padding: 2px;
+                            cursor: pointer;
+                            color: #555;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        "
+                    >
+
+                        <svg
+                            class="eye-icon"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+
+                            <!-- CLOSED / SLASHED EYE -->
+
+                            <path d="M3 3l18 18"></path>
+
+                            <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"></path>
+
+                            <path d="M9.9 4.2A10.8 10.8 0 0 1 12 4c6.5 0 10 8 10 8"></path>
+
+                            <path d="M6.6 6.6C3.7 8.5 2 12 2 12s3.5 8 10 8c1.8 0 3.3-.5 4.6-1.2"></path>
+
+                        </svg>
+
+                    </button>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- Confirm Password -->
+
+            <div style="
+                margin-bottom: 20px;
+            ">
+
+
+                <label
+                    for="confirm_password"
+                    style="
+                        display: block;
+                        margin-bottom: 6px;
+                        color: #374151;
+                    "
+                >
+                    <strong>Confirm Password</strong>
+                </label>
+
+
+                <div style="
+                    position: relative;
+                ">
+
+
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Re-enter password"
+                        required
+                        minlength="6"
+                        autocomplete="new-password"
+                        style="
+                            width: 100%;
+                            padding: 10px 38px 10px 12px;
+                            box-sizing: border-box;
+                            border: 1px solid #b8b8b8;
+                            border-radius: 4px;
+                            outline: none;
+                            font-size: 14px;
+                            background: #fff;
+                        "
+                    >
+
+
+                    <!-- Professional Eye Icon -->
+
+                    <button
+                        type="button"
+                        onclick="togglePassword('confirm_password', this)"
+                        aria-label="Show confirm password"
+                        style="
+                            position: absolute;
+                            right: 8px;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            border: none;
+                            background: transparent;
+                            padding: 2px;
+                            cursor: pointer;
+                            color: #555;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        "
+                    >
+
+                        <svg
+                            class="eye-icon"
+                            width="18"
+                            height="18"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+
+                            <!-- CLOSED / SLASHED EYE -->
+
+                            <path d="M3 3l18 18"></path>
+
+                            <path d="M10.6 10.6a2 2 0 0 0 2.8 2.8"></path>
+
+                            <path d="M9.9 4.2A10.8 10.8 0 0 1 12 4c6.5 0 10 8 10 8"></path>
+
+                            <path d="M6.6 6.6C3.7 8.5 2 12 2 12s3.5 8 10 8c1.8 0 3.3-.5 4.6-1.2"></path>
+
+                        </svg>
+
+                    </button>
+
+
+                </div>
+
+
+                <!-- Password Match Error -->
+
+                <div
+                    id="passwordError"
+                    style="
+                        display: none;
+                        margin-top: 6px;
+                        color: #dc2626;
+                        font-size: 13px;
+                    "
+                >
+                    Passwords do not match.
+                </div>
+
+
+            </div>
+
+
+            <!-- Sign Up Button -->
+
+            <button
+                type="submit"
+                style="
+                    width: 100%;
+                    padding: 12px;
+                    background: #2563eb;
+                    color: white;
+                    border: none;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 16px;
+                    font-weight: 600;
+                "
+            >
+                Create Account
+            </button>
+
+
+        </form>
+
+
+        <!-- Login Link -->
+
+        <div style="
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #6b7280;
+        ">
+
+            <span>
+                Already have an account?
+            </span>
+
+            <a
+                href="{{ url_for('login') }}"
+                style="
+                    color: #2563eb;
+                    text-decoration: none;
+                    font-weight: 600;
+                "
+            >
+                Login
+            </a>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<!-- Password Toggle -->
+
+<script>
+
+    function togglePassword(fieldId, button) {
+
+        const passwordInput =
+            document.getElementById(fieldId);
+
+        const eyeIcon =
+            button.querySelector(".eye-icon");
+
+
+        if (passwordInput.type === "password") {
+
+            /*
+             * Password is currently hidden.
+             * Show the password.
+             */
+
+            passwordInput.type = "text";
+
+
+            /*
+             * OPEN EYE
+             */
+
+            eyeIcon.innerHTML = `
+
+                <path
+                    d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"
+                ></path>
+
+                <circle
+                    cx="12"
+                    cy="12"
+                    r="3"
+                ></circle>
+
+            `;
+
+
+            button.setAttribute(
+                "aria-label",
+                "Hide password"
+            );
+
+
+        } else {
+
+            /*
+             * Password is currently visible.
+             * Hide the password.
+             */
+
+            passwordInput.type = "password";
+
+
+            /*
+             * CLOSED / SLASHED EYE
+             */
+
+            eyeIcon.innerHTML = `
+
+                <path d="M3 3l18 18"></path>
+
+                <path
+                    d="M10.6 10.6a2 2 0 0 0 2.8 2.8"
+                ></path>
+
+                <path
+                    d="M9.9 4.2A10.8 10.8 0 0 1 12 4c6.5 0 10 8 10 8"
+                ></path>
+
+                <path
+                    d="M6.6 6.6C3.7 8.5 2 12 2 12s3.5 8 10 8c1.8 0 3.3-.5 4.6-1.2"
+                ></path>
+
+            `;
+
+
+            button.setAttribute(
+                "aria-label",
+                "Show password"
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Signup Validation
+     */
+
+    function validateSignup() {
+
+        const username =
+            document.getElementById("username").value.trim();
+
+        const password =
+            document.getElementById("password").value;
+
+        const confirmPassword =
+            document.getElementById("confirm_password").value;
+
+        const passwordError =
+            document.getElementById("passwordError");
+
+
+        /*
+         * Username validation
+         */
+
+        if (username.length < 3) {
+
+            alert(
+                "Username must be at least 3 characters long."
+            );
+
+            return false;
+
+        }
+
+
+        /*
+         * Password validation
+         */
+
+        if (password.length < 6) {
+
+            alert(
+                "Password must be at least 6 characters long."
+            );
+
+            return false;
+
+        }
+
+
+        /*
+         * Confirm Password validation
+         */
+
+        if (password !== confirmPassword) {
+
+            passwordError.style.display = "block";
+
+            return false;
+
+        }
+
+
+        passwordError.style.display = "none";
+
+
+        return true;
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

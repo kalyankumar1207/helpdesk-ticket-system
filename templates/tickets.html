@@ -15,10 +15,20 @@
         </p>
     </div>
 
-    <a href="{{ url_for('create_ticket_page') }}" class="btn btn-primary">
-        <span>＋</span>
-        Create Ticket
-    </a>
+    <div class="page-heading-actions">
+
+        {% if session.get("role") == "Admin" %}
+            <a href="{{ url_for('export_tickets_page') }}" class="btn btn-secondary">
+                Export CSV
+            </a>
+        {% endif %}
+
+        <a href="{{ url_for('create_ticket_page') }}" class="btn btn-primary">
+            <span>＋</span>
+            Create Ticket
+        </a>
+
+    </div>
 </div>
 
 

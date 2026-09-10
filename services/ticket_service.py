@@ -478,3 +478,30 @@ def get_dashboard_stats():
 
     finally:
         connection.close()
+        
+def export_tickets():
+    """Retrieve all tickets for CSV export."""
+
+    connection = get_connection()
+
+    try:
+        cursor = connection.execute(
+            """
+            SELECT
+                id,
+                title,
+                description,
+                category,
+                priority,
+                status,
+                created_date,
+                assigned_to
+            FROM tickets
+            ORDER BY id DESC
+            """
+        )
+
+        return cursor.fetchall()
+
+    finally:
+        connection.close()
