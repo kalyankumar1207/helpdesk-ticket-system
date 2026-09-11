@@ -39,12 +39,13 @@ def init_db():
                 username TEXT NOT NULL UNIQUE,
                 password_hash TEXT NOT NULL,
                 created_date TEXT NOT NULL,
-                role TEXT NOT NULL DEFAULT 'User'
+                role TEXT NOT NULL DEFAULT 'User',
+                full_name TEXT NOT NULL DEFAULT ''
             )
             """
         )
 
-        # Check whether the existing users table already has a role column.
+        # Check the existing users table columns.
         columns = connection.execute(
             "PRAGMA table_info(users)"
         ).fetchall()
@@ -57,6 +58,15 @@ def init_db():
                 """
                 ALTER TABLE users
                 ADD COLUMN role TEXT NOT NULL DEFAULT 'User'
+                """
+            )
+
+        # Add full_name to an existing database if the column is missing.
+        if "full_name" not in column_names:
+            connection.execute(
+                """
+                ALTER TABLE users
+                ADD COLUMN full_name TEXT NOT NULL DEFAULT ''
                 """
             )
 

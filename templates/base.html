@@ -75,38 +75,21 @@
             </a>
 
 
-           <!-- Tickets -->
-<a
-    href="{{ url_for('tickets') }}"
-    class="nav-link {% if request.endpoint == 'tickets' %}active{% endif %}"
->
+            <!-- Tickets -->
+            <a
+                href="{{ url_for('tickets') }}"
+                class="nav-link {% if request.endpoint == 'tickets' %}active{% endif %}"
+            >
 
-    <span class="nav-icon">
-        ▤
-    </span>
+                <span class="nav-icon">
+                    ▤
+                </span>
 
-    <span>
-        Tickets
-    </span>
+                <span>
+                    Tickets
+                </span>
 
-</a>
-
-
-<!-- Logout -->
-<a
-    href="{{ url_for('logout') }}"
-    class="nav-link"
->
-
-    <span class="nav-icon">
-        ⇥
-    </span>
-
-    <span>
-        Logout
-    </span>
-
-</a>
+            </a>
 
         </nav>
 
@@ -118,7 +101,8 @@
     <div class="main-area">
 
 
-        <!-- Top Bar -->
+        <!-- ================= TOP BAR ================= -->
+
         <header class="topbar">
 
             <div class="topbar-left">
@@ -140,9 +124,137 @@
 
                 <span class="status-dot"></span>
 
-                <span>
+                <span class="service-desk-label">
                     Service Desk
                 </span>
+
+
+                <!-- ================= USER PROFILE ================= -->
+
+                {% if session.get("logged_in") %}
+
+                <div class="profile-container">
+
+                    <!-- Profile Avatar -->
+
+                    <button
+                        type="button"
+                        class="profile-avatar-button"
+                        onclick="toggleProfileMenu()"
+                        aria-label="Open user profile"
+                    >
+
+                        <span class="profile-avatar">
+
+                            {% if session.get("full_name") %}
+
+                                {% set name_parts = session.get("full_name").split() %}
+
+                                {% if name_parts|length >= 2 %}
+
+                                    {{ name_parts[0][0].upper() }}{{ name_parts[-1][0].upper() }}
+
+                                {% else %}
+
+                                    {{ session.get("full_name")[:2].upper() }}
+
+                                {% endif %}
+
+                            {% else %}
+
+                                {{ session.get("username", "U")[:2].upper() }}
+
+                            {% endif %}
+
+                        </span>
+
+                    </button>
+
+
+                    <!-- ================= PROFILE DROPDOWN ================= -->
+
+                    <div
+                        id="profileMenu"
+                        class="profile-menu"
+                    >
+
+                        <!-- Profile Header -->
+
+                        <div class="profile-menu-header">
+
+                            <strong>
+                                Helpdesk Ticket Management System
+                            </strong>
+
+                            <a
+                                href="{{ url_for('logout') }}"
+                                class="profile-signout"
+                            >
+                                Sign out
+                            </a>
+
+                        </div>
+
+
+                        <!-- User Information -->
+
+                        <div class="profile-menu-user">
+
+                            <div class="profile-menu-avatar">
+
+                                {% if session.get("full_name") %}
+
+                                    {% set name_parts = session.get("full_name").split() %}
+
+                                    {% if name_parts|length >= 2 %}
+
+                                        {{ name_parts[0][0].upper() }}{{ name_parts[-1][0].upper() }}
+
+                                    {% else %}
+
+                                        {{ session.get("full_name")[:2].upper() }}
+
+                                    {% endif %}
+
+                                {% else %}
+
+                                    {{ session.get("username", "U")[:2].upper() }}
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="profile-menu-details">
+
+                                <strong>
+                                    {{ session.get("full_name") or session.get("username") }}
+                                </strong>
+
+                                <span>
+                                    {{ session.get("username") }}
+                                </span>
+
+                                <span class="profile-role">
+                                    {{ session.get("role") }}
+                                </span>
+
+                                <a
+                                    href="#"
+                                    class="profile-account-link"
+                                >
+                                    View account ↗
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
 
             </div>
 
@@ -192,7 +304,8 @@
         </main>
 
 
-        <!-- Footer -->
+        <!-- ================= FOOTER ================= -->
+
         <footer class="app-footer">
 
             <span>
@@ -208,6 +321,46 @@
     </div>
 
 </div>
+
+
+<!-- ================= PROFILE MENU SCRIPT ================= -->
+
+<script>
+
+function toggleProfileMenu() {
+
+    const menu = document.getElementById("profileMenu");
+
+    if (!menu) {
+        return;
+    }
+
+    menu.classList.toggle("show");
+}
+
+
+document.addEventListener("click", function(event) {
+
+    const profileContainer =
+        document.querySelector(".profile-container");
+
+    const profileMenu =
+        document.getElementById("profileMenu");
+
+    if (!profileContainer || !profileMenu) {
+        return;
+    }
+
+    if (!profileContainer.contains(event.target)) {
+
+        profileMenu.classList.remove("show");
+
+    }
+
+});
+
+</script>
+
 
 </body>
 

@@ -181,7 +181,7 @@ textarea {
 .topbar-right {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 9px;
     color: #52677d;
     font-size: 12px;
 }
@@ -189,8 +189,177 @@ textarea {
 .status-dot {
     width: 8px;
     height: 8px;
+    flex: 0 0 8px;
     border-radius: 50%;
     background: #20b864;
+}
+
+.service-desk-label {
+    margin-right: 8px;
+}
+
+
+/* =========================================================
+   USER PROFILE
+========================================================= */
+
+.profile-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profile-avatar-button {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-avatar-button:hover {
+    background: #f1f5f9;
+}
+
+.profile-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f7dfe2;
+    color: #9b4b55;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid #f1cfd4;
+}
+
+
+/* =========================================================
+   PROFILE DROPDOWN
+========================================================= */
+
+.profile-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    width: 330px;
+    background: #ffffff;
+    border: 1px solid #e1e8f0;
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(16, 42, 67, 0.16);
+    overflow: hidden;
+    z-index: 1000;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition:
+        opacity 0.18s ease,
+        transform 0.18s ease,
+        visibility 0.18s ease;
+}
+
+.profile-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
+/* Profile menu top section */
+
+.profile-menu-header {
+    min-height: 52px;
+    padding: 0 16px;
+    border-bottom: 1px solid #edf1f5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.profile-menu-header strong {
+    color: #102a43;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.profile-signout {
+    color: #66788a;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.profile-signout:hover {
+    color: #2864e8;
+}
+
+
+/* Profile user section */
+
+.profile-menu-user {
+    padding: 18px 16px;
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+}
+
+.profile-menu-avatar {
+    width: 52px;
+    height: 52px;
+    flex: 0 0 52px;
+    border-radius: 50%;
+    background: #f7dfe2;
+    color: #9b4b55;
+    border: 1px solid #f1cfd4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.profile-menu-details {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.profile-menu-details strong {
+    color: #102a43;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.profile-menu-details > span {
+    color: #71849a;
+    font-size: 12px;
+    overflow-wrap: anywhere;
+}
+
+.profile-menu-details .profile-role {
+    color: #52677d;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.profile-account-link {
+    margin-top: 2px;
+    color: #52677d;
+    font-size: 11px;
+}
+
+.profile-account-link:hover {
+    color: #2864e8;
 }
 
 
@@ -473,6 +642,7 @@ textarea {
     background: #64748B;
 }
 
+
 /* =========================================================
    QUICK ACTIONS
 ========================================================= */
@@ -729,8 +899,12 @@ textarea {
     color: #c26100;
 }
 
-.badge-immediate
- {
+.badge-immediate {
+    background: #ffe8e8;
+    color: #c62828;
+}
+
+.badge-critical {
     background: #ffe8e8;
     color: #c62828;
 }
@@ -753,6 +927,11 @@ textarea {
 .badge-closed {
     background: #edf1f5;
     color: #66788a;
+}
+
+.badge-hold {
+    background: #fff8df;
+    color: #a56b00;
 }
 
 
@@ -933,6 +1112,15 @@ textarea {
         display: none;
     }
 
+    .service-desk-label {
+        display: none;
+    }
+
+    .profile-menu {
+        width: 300px;
+        right: -5px;
+    }
+
     .main-content {
         width: calc(100% - 30px);
         padding: 28px 0 35px;
@@ -984,6 +1172,11 @@ textarea {
     .quick-actions-card,
     .filter-card {
         padding: 22px 18px;
+    }
+
+    .profile-menu {
+        width: calc(100vw - 30px);
+        right: -8px;
     }
 
 }
